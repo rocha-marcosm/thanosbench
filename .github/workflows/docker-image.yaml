@@ -7,12 +7,50 @@ on:
   pull_request:
     branches:
       – master
+      
+env:
+  TEST_TAG: $GITHUB_REPOSITORY:$GITHUB_SHA
+  DOCKERHUB_PROJECT: thanosbench
+  TAG: 0.2.0
 
 jobs:
-  build:
-    runs-on: ubuntu-20.04
+#   build:
+#     runs-on: ubuntu-20.04
 
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Build the Docker image
+#         run: docker build . --file Dockerfile --tag $GITHUB_REPOSITORY:$GITHUB_SHA
+        
+  docker:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag $GITHUB_REPOSITORY:$GITHUB_SHA
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          
+      - name: Test
+        run: |
+          docker run --rm ${{ env.TEST_TAG }} --help
+          
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_PROJECT }}:${{ env.TAG }}
+            
