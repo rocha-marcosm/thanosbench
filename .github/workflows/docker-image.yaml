@@ -2,14 +2,15 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [main]
-#     tags: [alpine-*]
+    branches:
+      - master
   pull_request:
-#     branches: [main]
+    branches:
+      – master
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
