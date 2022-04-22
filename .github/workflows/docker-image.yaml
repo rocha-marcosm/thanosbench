@@ -5,7 +5,7 @@ on:
     branches: [main]
 #     tags: [alpine-*]
   pull_request:
-    branches: [main]
+#     branches: [main]
 
 jobs:
   build:
