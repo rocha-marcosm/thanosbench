@@ -1,0 +1,29 @@
+---
+#create deployment thanosbench
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: thanosbench
+#   namespace: some-namesapce
+  labels:
+    name: thanosbench
+spec:
+  selector:
+    matchLabels:
+      app: thanosbench
+  replicas: 3 
+  template:
+    metadata:
+      labels:
+        app: thanosbench
+    spec:
+      containers:
+      - name: thanosbench
+        image: mrochaopsgurutest/thanosbench:0.2.0
+		imagePullPolicy: IfNotPresent
+        args:
+        - "stress"
+        - "--workers=3"
+        - "--query.look-back=12h"
+        - "<storegateway-service-ip>:10901" # chnage this
+        
