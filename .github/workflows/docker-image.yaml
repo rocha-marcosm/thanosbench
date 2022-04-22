@@ -9,7 +9,7 @@ on:
       – master
       
 env:
-  TEST_TAG: $GITHUB_REPOSITORY:$GITHUB_SHA
+  TEST_TAG: ${{ github.repository }}:${{ github.sha }}
   DOCKERHUB_PROJECT: thanosbench
   TAG: 0.2.0
 
