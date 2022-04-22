@@ -8,6 +8,8 @@ RUN apk update && apk upgrade && apk add --no-cache alpine-sdk
 # while COPY supports the basic copying of local files into the container.
 # https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#add-or-copy
 COPY . $GOPATH/src/github.com/thanos-io/thanosbench
+# Add missing promu - https://github.com/thanos-io/thanosbench/issues/37#issuecomment-1056813002
+RUN go get github.com/prometheus/promu@v0.13.0
 RUN git update-index --refresh; make build
 # -----------------------------------------------------------------------------
 FROM quay.io/prometheus/busybox:latest
